@@ -90,6 +90,9 @@ public final class CassandraDependenciesJob {
     		  System.getProperty("javax.net.ssl.keyStorePassword", ""));
       sparkProperties.put("spark.cassandra.auth.username", Utils.getEnv("CASSANDRA_USERNAME", ""));
       sparkProperties.put("spark.cassandra.auth.password", Utils.getEnv("CASSANDRA_PASSWORD", ""));
+      sparkProperties.put("spark.executor.cores", "12");
+      sparkProperties.put("spark.deploy.defaultCores", "12");
+      System.setProperty("com.datastax.driver.NON_BLOCKING_EXECUTOR_SIZE","12");
     }
 
     /** When set, this indicates which jars to distribute to the cluster. */
@@ -143,6 +146,7 @@ public final class CassandraDependenciesJob {
         .setAppName(getClass().getName());
     conf.set("spark.cassandra.connection.host", parseHosts(builder.contactPoints));
     conf.set("spark.cassandra.connection.port", parsePort(builder.contactPoints));
+
     if (builder.localDc != null) {
       conf.set("connection.local_dc", builder.localDc);
     }
@@ -168,6 +172,7 @@ public final class CassandraDependenciesJob {
           .mapValues(span -> (Span) span)
           .groupByKey();
 
+      log.info("Traces select created, running derivation");
       List<Dependency> dependencyLinks = DependenciesSparkHelper.derive(traces,peerServiceTag);
       store(sc, dependencyLinks);
       log.info("Done, {} dependency objects created", dependencyLinks.size());

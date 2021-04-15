@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.spark.api.java.function.Function;
 
@@ -32,6 +34,7 @@ import org.apache.spark.api.java.function.Function;
  * @author Pavol Loffay
  */
 public class SpansToDependencyLinks implements Function<Iterable<Span>, Iterable<Dependency>>{
+  private static final Logger log = LoggerFactory.getLogger(SpansToDependencyLinks.class);
 
     /**
      * Derives dependency links based on supplied spans.
@@ -52,6 +55,8 @@ public class SpansToDependencyLinks implements Function<Iterable<Span>, Iterable
         Map<Long, Set<Span>> spanMap = new LinkedHashMap<>();
         Map<Long, Set<Span>> spanChildrenMap = new LinkedHashMap<>();
         for (Span span: trace) {
+
+          log.info("Processing span: {}", span.getSpanId());
             // Map of children
             for (Reference ref: span.getRefs()){
               Set <Span> children = spanChildrenMap.get(ref.getSpanId());
