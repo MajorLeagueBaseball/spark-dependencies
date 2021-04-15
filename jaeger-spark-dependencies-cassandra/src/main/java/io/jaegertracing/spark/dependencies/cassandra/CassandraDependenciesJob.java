@@ -90,9 +90,10 @@ public final class CassandraDependenciesJob {
     		  System.getProperty("javax.net.ssl.keyStorePassword", ""));
       sparkProperties.put("spark.cassandra.auth.username", Utils.getEnv("CASSANDRA_USERNAME", ""));
       sparkProperties.put("spark.cassandra.auth.password", Utils.getEnv("CASSANDRA_PASSWORD", ""));
-      sparkProperties.put("spark.executor.cores", "12");
-      sparkProperties.put("spark.deploy.defaultCores", "12");
-      System.setProperty("com.datastax.driver.NON_BLOCKING_EXECUTOR_SIZE","12");
+      sparkProperties.put("spark.executor.cores", "8");
+      sparkProperties.put("spark.cores.max", "16");
+      sparkProperties.put("spark.deploy.defaultCores", "8");
+      System.setProperty("com.datastax.driver.NON_BLOCKING_EXECUTOR_SIZE","8");
     }
 
     /** When set, this indicates which jars to distribute to the cluster. */
